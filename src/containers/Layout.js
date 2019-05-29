@@ -23,10 +23,10 @@ class CustomLayout extends React.Component {
                 Logout
               </Menu.Item>
             ) : (
-              <Menu.Item key="2">
-                <Link to="/login">Login</Link>
-              </Menu.Item>
-            )}
+                <Menu.Item key="2">
+                  <Link to="/login">Login</Link>
+                </Menu.Item>
+              )}
           </Menu>
         </Header>
         <Content style={{ padding: "0 50px" }}>
@@ -34,9 +34,16 @@ class CustomLayout extends React.Component {
             <Breadcrumb.Item>
               <Link to="/">Home</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              <Link to="/">List</Link>
-            </Breadcrumb.Item>
+            {this.props.token !== null ? (
+              <Breadcrumb.Item>
+                <Link to={`/profile/${this.props.userId}`}>Profile</Link>
+              </Breadcrumb.Item>
+            ) : null}
+            {this.props.token !== null && this.props.is_teacher ? (
+              <Breadcrumb.Item>
+                <Link to="create">Create</Link>
+              </Breadcrumb.Item>
+            ) : null}
           </Breadcrumb>
           <div style={{ background: "#fff", padding: 24, minHeight: 280 }}>
             {this.props.children}
@@ -50,6 +57,14 @@ class CustomLayout extends React.Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    userId: state.auth.userId,
+    token: state.auth.token,
+    is_teacher: state.auth.is_teacher,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(actions.logout())
@@ -58,7 +73,7 @@ const mapDispatchToProps = dispatch => {
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(CustomLayout)
 );
